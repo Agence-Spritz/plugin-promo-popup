@@ -2,9 +2,9 @@
 window.addEventListener('load', function () {
 	
 	// Si on est sur la Home page
-	if ($('body').hasClass('home')) {
-		$("#PopupModal").delay(1500).queue(function(next){
-			$(this).modal('show');
+	if (jQuery('body').hasClass('home')) {
+		jQuery("#PopupModal").delay(1500).queue(function(next){
+			jQuery(this).modal('show');
 		    next();
 		});
 	

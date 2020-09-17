@@ -27,9 +27,8 @@ function promo_popup_create_shortcode($atts) {
 		$Content .= '   </div>';
 		$Content .= '</div>';
 	 
-    return $Content;
+    echo $Content;
 }
 
-add_shortcode('promo-popup-shortcode', 'promo_popup_create_shortcode');
 	
 ?>

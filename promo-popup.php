@@ -99,43 +99,20 @@ function PopupSettingsPage( )
 		<p style="font-weight: bold">Bienvenue sur le panneau de gestion du module Promo Popup (by Spritz) <br />
 		Une fois activée, la popup se lancera automatiquement à l'ouverture de la page d'accueil du site, après 1,5sd.</p>
 		
-		<?php 
+		<?php // On vérifie que Woocommerce est bien installé
 			if ( class_exists( 'WooCommerce' ) ) {
-	
-				$code = 'test123';
-				$coupon = new WC_Coupon($code);
-				$coupon_post = get_post($coupon->id);
-				$coupon_data = array(
-				    'id' => $coupon->id,
-				    'code' => $coupon->code,
-				    'type' => $coupon->type,
-				    'created_at' => $coupon_post->post_date_gmt,
-				    'updated_at' => $coupon_post->post_modified_gmt,
-				    'amount' => wc_format_decimal($coupon->coupon_amount, 2),
-				    'individual_use' => ( 'yes' === $coupon->individual_use ),
-				    'product_ids' => array_map('absint', (array) $coupon->product_ids),
-				    'exclude_product_ids' => array_map('absint', (array) $coupon->exclude_product_ids),
-				    'usage_limit' => (!empty($coupon->usage_limit) ) ? $coupon->usage_limit : null,
-				    'usage_count' => (int) $coupon->usage_count,
-				    'expiry_date' => (!empty($coupon->expiry_date) ) ? date('Y-m-d', $coupon->expiry_date) : null,
-				    'enable_free_shipping' => $coupon->enable_free_shipping(),
-				    'product_category_ids' => array_map('absint', (array) $coupon->product_categories),
-				    'exclude_product_category_ids' => array_map('absint', (array) $coupon->exclude_product_categories),
-				    'exclude_sale_items' => $coupon->exclude_sale_items(),
-				    'minimum_amount' => wc_format_decimal($coupon->minimum_amount, 2),
-				    'maximum_amount' => wc_format_decimal($coupon->maximum_amount, 2),
-				    'customer_emails' => $coupon->customer_email,
-				    'description' => $coupon_post->post_excerpt,
-				);
 				
-				$usage_left = $coupon_data['usage_limit'] - $coupon_data['usage_count'];
+				// Onn test la validité du code promo
+				$coupon = new WC_Coupon( get_option('code_promo') );
+				$test_coupon = $coupon->is_valid();
 				
-				if ($usage_left > 0) {
+				if ($test_coupon == true) {
 				    echo "<div class='alert alert-success' role='alert'>Code promo valide</div>";
 				} 
 				else {
 				    echo "<div class='alert alert-danger' role='alert'>Code promo invalide</div>";
 				}
+
 			} else {
 				echo "<div class='alert alert-warning' role='alert'>Attention, ce plugin requiert l'installation de Woocommerce</div>";
 			}
@@ -204,6 +181,12 @@ function PopupSettingsPage( )
 		</form>
 	</div>
 <?php
+}
+
+// Injection du template dans le footer du site, si la popup est activée
+if(get_option( 'activation_popup' )==true) {
+	
+	add_action('wp_footer', 'promo_popup_create_shortcode');
 }
 
 ?>
