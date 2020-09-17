@@ -101,12 +101,12 @@ function PopupSettingsPage( )
 		<hr>
 		
 		<p style="font-weight: bold">Bienvenue sur le panneau de gestion du module Promo Popup (by Spritz) <br />
-		Une fois activée, la popup se lancera automatiquement à l'ouverture de la page d'accueil du site, après 1,5sd.</p>
+		Une fois activée, la popup se lancera automatiquement à l'ouverture de la page d'accueil du site, après 1,5 secondes.</p>
 		
 		<?php // On vérifie que Woocommerce est bien installé
 			if ( class_exists( 'WooCommerce' ) ) {
 				
-				// Onn test la validité du code promo
+				// On test la validité du code promo
 				$coupon = new WC_Coupon( get_option('code_promo') );
 				$test_coupon = $coupon->is_valid();
 				
@@ -210,15 +210,17 @@ function PopupSettingsPage( )
 }
 
 // Injection du template dans le footer du site, si la popup est activée
-if(get_option( 'activation_popup' )==true) {
-	
+
+				
 	add_action('init', 'ajax_auth_init');
 	function ajax_auth_init()
 	{
-	    //if(!is_user_logged_in()) return;
-	    // rest of your code
-	    add_action('wp_footer', 'promo_popup_create_shortcode');
+		if (get_option( 'activation_popup' )==true) {
+		    //if(!is_user_logged_in()) return;
+		    // rest of your code
+		    add_action('wp_footer', 'promo_popup_create_shortcode');
+	    }
 	}
-}
+
 
 ?>

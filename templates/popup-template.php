@@ -18,7 +18,7 @@ function promo_popup_create_shortcode($atts) {
 
 		$Content .= '        <div class="modal-body">';
 		$Content .= '        	<div class="logo">';
-		$Content .= '        		<img src="'.get_option("logo-popup").'" alt="'.bloginfo("name").'" />';
+		$Content .= '        		<img src="'.get_option("logo-popup").'" alt="'.get_bloginfo("name").'" />';
 		$Content .= '        	</div>';
 		$Content .= '        	<div class="text">';
 		$Content .= 				get_option("text_popup");
