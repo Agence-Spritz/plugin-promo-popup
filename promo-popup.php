@@ -37,16 +37,20 @@ function PopupRegisterSettings( )
 	register_setting( 'popup_options', 'text_popup' );
 	register_setting( 'popup_options', 'code_promo' );
 	register_setting( 'popup_options', 'fond-popup' );
+	register_setting( 'popup_options', 'logo-popup' );
 }
 
 // Déclaration des Scripts
 function add_admin_scripts()
 {
-	wp_enqueue_script( 'jquery' );
-	wp_enqueue_script( 'add-admin-scripts', plugin_dir_url( __FILE__ ) . 'js/main.js', array( 'jquery' ) );
+
+	wp_enqueue_script("jquery");
+	wp_enqueue_script( 'bootstrap_js', plugin_dir_url( __FILE__ ) . 'src/vendor/bootstrap/js/bootstrap.min.js', array('jquery'));
+	wp_enqueue_script( 'add-admin-scripts', plugin_dir_url( __FILE__ ) . 'src/js/main.js', array('jquery'));
 	
-	// Feuille de style de la popup
-	wp_enqueue_style( 'popup_options_styles', plugin_dir_url( __FILE__ ) . 'css/styles.css', array('spritz_bootstrap'), PROMO_POPUP_VERSION, 'all' );
+	// Feuille de style de la popup	
+	wp_enqueue_style( 'bootstrap_css', plugin_dir_url( __FILE__ ) . 'src/vendor/bootstrap/css/bootstrap.min.css', array(), PROMO_POPUP_VERSION, 'all'  );
+	wp_enqueue_style( 'popup_options_styles', plugin_dir_url( __FILE__ ) . 'src/css/styles.css', array(), PROMO_POPUP_VERSION, 'all' );
 
 }
 add_action('wp_enqueue_scripts', 'add_admin_scripts');
@@ -54,7 +58,7 @@ add_action('wp_enqueue_scripts', 'add_admin_scripts');
 // Déclaration feuille de style admin
 function popup_admin_styles(){
     
-        wp_enqueue_style( 'admin_options_styles', plugin_dir_url( __FILE__ ) . 'css/admin_styles.css' );
+    wp_enqueue_style( 'admin_options_styles', plugin_dir_url( __FILE__ ) . 'src/css/admin_styles.css' );
     
 }
 add_action( 'admin_print_styles', 'popup_admin_styles' );
@@ -146,17 +150,39 @@ function PopupSettingsPage( )
 				
 				<?php wp_enqueue_media();?>
 				<tr valign="top" >
+					<th scope="row"><label for="logo-popup">Logo Popup</label></th>
+					<td class="image">
+						<img style="margin-top: 10px; margin-bottom: 10px; max-width:150px;height:auto;" id="logo-popup-preview" src="<?php if(!empty(get_option( 'logo-popup' ))) { echo get_option( 'logo-popup' ); }  ?>" />
+						<input type="text" name="logo-popup" id="logo-popup" class="meta_image" value="<?php if(!empty(get_option( 'logo-popup' ))) { echo get_option( 'logo-popup' ); }  ?>" />
+						<input type="button" id="logo-popup-button" class="button" value="Choisir ou télécharger une image" />	
+					</td>
+				</tr>
+				<tr valign="top" >
 					<th scope="row"><label for="fond-popup">Visuel fond Popup</label></th>
 					<td class="image">
-						
 						<img style="margin-top: 10px; margin-bottom: 10px; max-width:200px;height:auto;" id="fond-popup-preview" src="<?php if(!empty(get_option( 'fond-popup' ))) { echo get_option( 'fond-popup' ); }  ?>" />
 						<input type="text" name="fond-popup" id="fond-popup" class="meta_image" value="<?php if(!empty(get_option( 'fond-popup' ))) { echo get_option( 'fond-popup' ); }  ?>" />
-						<input type="button" id="fond-popup-button" class="button" value="Choisir ou télécharger une image" />
-							
+						<input type="button" id="fond-popup-button" class="button" value="Choisir ou télécharger une image" />	
 					</td>
 				</tr>
 			
 				<script>
+				jQuery('#logo-popup-button').click(function() {
+				
+				    var send_attachment_bkp = wp.media.editor.send.attachment;
+				
+				    wp.media.editor.send.attachment = function(props, attachment) {
+				
+					    jQuery('#logo-popup').val(attachment.url);
+						jQuery('#logo-popup-preview').attr('src',attachment.url);
+					        wp.media.editor.send.attachment = send_attachment_bkp;
+					    }
+				
+				    wp.media.editor.open();
+				
+				    return false;
+				});
+				
 				jQuery('#fond-popup-button').click(function() {
 				
 				    var send_attachment_bkp = wp.media.editor.send.attachment;
@@ -186,7 +212,13 @@ function PopupSettingsPage( )
 // Injection du template dans le footer du site, si la popup est activée
 if(get_option( 'activation_popup' )==true) {
 	
-	add_action('wp_footer', 'promo_popup_create_shortcode');
+	add_action('init', 'ajax_auth_init');
+	function ajax_auth_init()
+	{
+	    //if(!is_user_logged_in()) return;
+	    // rest of your code
+	    add_action('wp_footer', 'promo_popup_create_shortcode');
+	}
 }
 
 ?>
