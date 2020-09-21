@@ -1,3 +1,30 @@
+/*  Compatibilité Woocomemrce / Bootstrap */
+.woocommerce-page .woocommerce .woocommerce-checkout .col-1, .woocommerce-page .woocommerce .woocommerce-checkout .col-2 {
+	max-width: inherit;
+	padding-left: 0;
+	padding-right: 0;
+}
+
+
+.woocommerce-page .woocommerce .woocommerce-checkout .form-row, .woocommerce-page .woocommerce .woocommerce-checkout p.form-row {  
+	display: block;
+	margin-right: 2%;
+}
+
+
+.woocommerce-page .woocommerce .woocommerce-checkout .col-1 .form-row-last, .woocommerce-page .woocommerce .woocommerce-checkout .col-2 .form-row-last {
+	margin-right: 0;
+	width: 49%
+}
+
+.woocommerce-page .woocommerce .woocommerce-checkout .col-1 .form-row-first, .woocommerce-page .woocommerce .woocommerce-checkout .col-2 .form-row-first {
+	width: 49%
+}
+
+.woocommerce-page .woocommerce .woocommerce-checkout .col-1 .form-row-wide, .woocommerce-page .woocommerce .woocommerce-checkout .col-2 .form-row-wide {
+	width: 100%;
+}
+
 
 .modal-content {
 	position: relative;
